@@ -96,11 +96,11 @@ void AbstractButton::mousemove_event(MouseEvent& event)
 {
     bool is_over = rect().contains(event.position());
     m_hovered = is_over;
-    if (event.buttons() & MouseButton::Primary) {
+    if (event.buttons() & (MouseButton::Primary | MouseButton::Middle)) {
         bool being_pressed = is_over;
         if (being_pressed != m_being_pressed) {
             m_being_pressed = being_pressed;
-            if (m_auto_repeat_interval) {
+            if (event.buttons() & MouseButton::Primary && m_auto_repeat_interval) {
                 if (!m_being_pressed)
                     m_auto_repeat_timer->stop();
                 else
@@ -124,6 +124,11 @@ void AbstractButton::mousedown_event(MouseEvent& event)
         }
         event.accept();
     }
+    if (event.button() == MouseButton::Middle) {
+        m_being_pressed = true;
+        repaint();
+        event.accept();
+    }
     Widget::mousedown_event(event);
 }
 
@@ -137,6 +142,13 @@ void AbstractButton::mouseup_event(MouseEvent& event)
         repaint();
         if (was_being_pressed && !was_auto_repeating)
             click(event.modifiers());
+    }
+    if (event.button() == MouseButton::Middle && m_being_pressed) {
+        bool was_being_pressed = m_being_pressed;
+        m_being_pressed = false;
+        repaint();
+        if (was_being_pressed)
+            middle_click(event.modifiers());
     }
     Widget::mouseup_event(event);
 }

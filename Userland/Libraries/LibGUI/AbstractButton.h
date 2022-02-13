@@ -35,6 +35,7 @@ public:
     bool is_being_pressed() const { return m_being_pressed; }
 
     virtual void click(unsigned modifiers = 0) = 0;
+    virtual void middle_click([[maybe_unused]] unsigned modifiers = 0) {};
     virtual bool is_uncheckable() const { return true; }
 
     int auto_repeat_interval() const { return m_auto_repeat_interval; }
