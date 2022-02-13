@@ -210,6 +210,11 @@ void BookmarksBarWidget::model_did_update(unsigned)
                 on_bookmark_click(url, modifiers);
         };
 
+        button.on_middle_click = [title, url, this](auto modifiers) {
+            if (on_bookmark_click)
+                on_bookmark_click(url, Mod_Ctrl | modifiers);
+        };
+
         button.on_context_menu_request = [this, url](auto& context_menu_event) {
             m_context_menu_url = url;
             m_context_menu->popup(context_menu_event.screen_position(), m_context_menu_default_action);
